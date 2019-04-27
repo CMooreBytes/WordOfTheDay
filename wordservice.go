@@ -5,42 +5,30 @@ import (
 	"log"
 	"net/http"
 	"time"
+	"math/rand"
+	"fmt"
 )
 
 const svc_endpoint_base = "https://en.wiktionary.org/w/api.php?action=parse&format=json&prop=links&page=Wiktionary:Word_of_the_day/"
 
-type ServiceResponse struct {
-	Parse ParseResult  `json:"parse"`
-}
-
-type ParseResult struct {
-	Title  string `json:"title"`
-	Pageid int `json:"pageid"`
-	Links  []LinkResult `json:"links"`
-}
-
-type LinkResult struct {
-	Ns     int `json:"ns"`
-	Exists string `json:"exists"`
-	Value string `json:"*"`
-}
-
-type Result struct{
-	Word string
+type WordService struct {
+	ServiceEndpointBase string
 }
 
 type WordServiceInterface interface{
+	GetUrl(t time.Time) string
 	GetWord() string
+	GetScrambledWord() (string,string)
+	Scramble(word string) string
 }
 
-type WordService struct {
-
+func (w WordService) GetUrl(t time.Time) string {
+	tf := t.Format("January__2")
+	return fmt.Sprintf("%s%s", svc_endpoint_base, tf)
 }
 
-func (w WordService) GetWord() *Result {
-	tf := time.Now().Format("January__2")
-	svc_endpoint := svc_endpoint_base + tf
-	
+func (w WordService) GetWord() string {
+	svc_endpoint := w.GetUrl(time.Now())
 	resp, err := http.Get(svc_endpoint)
 	if err != nil {
 		log.Fatal(err)
@@ -53,7 +41,30 @@ func (w WordService) GetWord() *Result {
 	if err != nil {
 		log.Fatal(err)
 	}
-	result := new(Result)
-	result.Word = responseBody.Parse.Links[0].Value
-	return result
+	
+	return responseBody.Parse.Links[0].Value
+}
+
+func  (w WordService) GetScrambledWord() (string,string) {
+	word := w.GetWord();
+	scrambled_word := w.Scramble(word)
+	return word, scrambled_word
+}
+
+func (w WordService) Scramble(word string) string{
+	char_arr := scramble([]rune(word), 0)
+	return string(char_arr)
+}
+
+func scramble(word []rune, index int) []rune {
+	if index >= len(word) {	
+		return word
+	} else {	
+		rand.Seed(time.Now().UnixNano())
+		cursor := rand.Intn(len(word)-index)
+		letter := word[cursor + index]		
+		word[cursor + index] = word[index]		
+		word[index] = letter		
+		return scramble(word, index + 1)
+	}
 }
