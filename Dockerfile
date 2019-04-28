@@ -14,3 +14,6 @@ COPY --from=builder /go/bin/app /app
 ENTRYPOINT ./app
 LABEL Name=go Version=0.0.1
 EXPOSE 5000
+
+#docker build -t wordoftheday .
+#docker run --publish 5000:8000 --name test --rm wordoftheday

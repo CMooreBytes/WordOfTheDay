@@ -4,12 +4,9 @@ import (
 	"log"
 	"net/http"
 	"fmt"
-	"os"
 )
 
 func main(){
-	cwd, _ := os.Getwd()
-	log.Println(cwd)
 	log.Println("Initializing the router...")
 	router := new(AppRouter)
 	handler := http.NewServeMux()
