@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"fmt"
+	"html/template"
+	"log"
 )
 
 const default_port_number = 8000
@@ -15,10 +17,22 @@ func (AppRouter) PortNumber() string{
 }
 
 func (router AppRouter) Register(handler *http.ServeMux){
+	handler.HandleFunc("/", router.AppHandler)
 	handler.HandleFunc("/api/word/wotd", router.GetWordHandler)
 	handler.HandleFunc("/api/word/scramble", router.ScrambleHandler)
 	handler.HandleFunc("/api/word/puzzle", router.PuzzleHandler)
 	handler.HandleFunc("/test", router.TestHandler)
+}
+
+func (router AppRouter) AppHandler(w http.ResponseWriter, r *http.Request) {
+	t,err := template.New("index.html").ParseFiles("index.html")
+	if(err != nil){
+		log.Fatal(err)
+	}
+	svc := new (WordService)
+	result := new(Result)
+	result.Word, result.ScrambledWord = svc.GetScrambledWord()
+	t.Execute(w, result)
 }
 
 func (router AppRouter) TestHandler(w http.ResponseWriter, r *http.Request) {
