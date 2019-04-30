@@ -1,4 +1,4 @@
-package main
+package wordservice
 
 type ServiceResponse struct {
 	Parse ParseResult  `json:"parse"`
@@ -14,9 +14,4 @@ type LinkResult struct {
 	Ns     int `json:"ns"`
 	Exists string `json:"exists"`
 	Value string `json:"*"`
-}
-
-type Result struct{
-	Word string
-	ScrambledWord string
 }

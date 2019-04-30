@@ -4,11 +4,11 @@ import (
 	"log"
 	"net/http"
 	"fmt"
+	"github.com/cmoorebytes/wordoftheday/pkg/router"
 )
 
 func main(){
 	log.Println("Initializing the router...")
-	router := new(AppRouter)
 	handler := http.NewServeMux()
 	log.Println("Registering API endpoints...")
 	router.Register(handler)
