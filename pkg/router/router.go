@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"os"
 	"path"
 	"github.com/cmoorebytes/wordoftheday/pkg/wordservice"
 )
@@ -13,7 +14,13 @@ import (
 const default_port_number = 8000
 
 func PortNumber() string{
-	return fmt.Sprintf(":%d", default_port_number);
+	port, ok := os.LookupEnv("PORT")
+	if(!ok){
+		return fmt.Sprintf(":%d", default_port_number)
+	} else {
+		return fmt.Sprintf(":%s", port)
+	}
+	
 }
 
 func Register(handler *http.ServeMux){
