@@ -1,0 +1,58 @@
+:root {
+    --background-color: #444444;
+    --default-text-color: #333333;
+    --alt-text-color: white;
+    --app-color: royalblue;
+  }
+body{
+    margin:0;
+    padding:0;
+    background: var(--background-color);
+    color:var(--alt-text-color);
+}
+header{
+    padding:0.5em 1em;
+    font-weight:bold;
+    font-size: 1.5em;
+}
+main{
+    margin:0;
+    padding:0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+}
+.hidden{
+    visibility: hidden;
+}
+
+.app-container {
+    max-width: 960px;
+    min-width: 360px;
+    margin:auto;
+    background-color: var(--alt-text-color);
+    color: var(--default-text-color);
+    padding:2em;
+}
+.text-field-container{
+    padding-top:1em;
+    margin-bottom:4em;
+
+}
+.button-group{
+    margin-bottom:1em;
+}
+button {
+    padding: 1em;
+    width:120px;
+    background-color: var(--app-color);
+    color:white;
+    border:none;
+}
+
+input[type=text]{
+    padding: 0.5em;
+    width:calc(100% - 1em);
+}

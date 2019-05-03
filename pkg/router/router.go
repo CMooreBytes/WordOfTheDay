@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"html/template"
 	"log"
+	"path"
 	"github.com/cmoorebytes/wordoftheday/pkg/wordservice"
 )
 
@@ -16,22 +17,33 @@ func PortNumber() string{
 }
 
 func Register(handler *http.ServeMux){
-	handler.HandleFunc("/", appHandler)
 	handler.HandleFunc("/api/word/wotd", getWordHandler)
 	handler.HandleFunc("/api/word/scramble", scrambleHandler)
 	handler.HandleFunc("/api/word/puzzle", puzzleHandler)
 	handler.HandleFunc("/test", testHandler)
+	handler.HandleFunc("/", appHandler)
 }
 
 func appHandler(w http.ResponseWriter, r *http.Request) {
-	t,err := template.New("index.html").ParseFiles("index.html")
-	if(err != nil){
-		log.Fatal(err)
+	base := path.Base(r.URL.Path)
+	if(base == "/") {
+		base = "index.html"
 	}
-	
-	result := new(Result)
-	result.Word, result.ScrambledWord = wordservice.GetScrambledWord()
-	t.Execute(w, result)
+	switch path := path.Ext(r.URL.Path); path {
+		case ".js":
+			http.ServeFile(w, r, "wwwroot/js/" + base)
+		case ".css":
+			http.ServeFile(w, r, "wwwroot/css/" + base)
+		default:
+			t,err := template.New(base).ParseFiles("wwwroot/" + base)
+			if(err != nil){
+				log.Fatal(err)
+			}
+			
+			result := new(Result)
+			result.Word, result.ScrambledWord = wordservice.GetScrambledWord()
+			t.Execute(w, result)
+	}
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request) {

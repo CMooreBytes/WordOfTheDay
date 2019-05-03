@@ -12,8 +12,9 @@ import (
 const svc_endpoint_base = "https://en.wiktionary.org/w/api.php?action=parse&format=json&prop=links&page=Wiktionary:Word_of_the_day/"
 
 func GetUrl(t time.Time) string {
-	tf := t.Format("January__2")
-	return fmt.Sprintf("%s%s", svc_endpoint_base, tf)
+	month := t.Format("January")
+	date := t.Format("2")
+	return fmt.Sprintf("%s%s_%s", svc_endpoint_base, month, date)
 }
 
 func GetWord() string {
